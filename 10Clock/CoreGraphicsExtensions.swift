@@ -12,7 +12,7 @@ import UIKit
 extension UIColor {
     var greyscale: UIColor{
         var (hue, saturation, brightness, alpha) = (CGFloat(0.0), CGFloat(0.0), CGFloat(0.0), CGFloat(0.0))
-
+        
         if self.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
             return  UIColor(hue: hue, saturation: 0, brightness: brightness, alpha: alpha / 2)
         }else {
@@ -38,7 +38,7 @@ extension UIColor {
 }
 
 extension Angle{
-    var reverse:Angle{return CGFloat(2 * M_PI) - self}
+    var reverse:Angle{return CGFloat(2 * Double.pi) - self}
 }
 extension FloatingPoint{
     var isBad:Bool{ return isNaN || isInfinite }
@@ -48,7 +48,7 @@ extension FloatingPoint{
         }
         return self
     }
-
+    
 }
 
 typealias Angle = CGFloat
@@ -57,7 +57,7 @@ func df() -> CGFloat {
 }
 func clockDescretization(_ val: CGFloat) -> CGFloat{
     let min:Double  = 0
-    let max:Double = 2 * Double(M_PI)
+    let max:Double = 2 * Double.pi
     let steps:Double = 144
     let stepSize = (max - min) / steps
     let nsf = floor(Double(val) / stepSize)
@@ -90,7 +90,7 @@ extension CGRect{
         }
         return self
     }
-
+    
 }
 extension CGPoint{
     var vector:CGVector { return CGVector(dx: x, dy: y).checked}
@@ -110,7 +110,7 @@ extension CGVector{
         }
         return self
     }
-
+    
     static var root:CGVector{ return CGVector(dx:1, dy:0).checked}
     var magnitude:CGFloat { return sqrt(pow(dx, 2) + pow(dy,2)).checked}
     var normalized: CGVector { return CGVector(dx:dx / magnitude,  dy: dy / magnitude).checked }
@@ -125,15 +125,17 @@ extension CGVector{
     
     init( from:CGPoint, to:CGPoint){
         guard !from.hasNaN && !to.hasNaN  else {
-                fatalError("Nan point!")
-            }
+            fatalError("Nan point!")
+        }
+        self.init()
         dx = to.x - from.x
         dy = to.y - from.y
         _ = self.checked
     }
     
     init(angle:Angle){
-        let compAngle = angle < 0 ? (angle + CGFloat(2 * M_PI)) : angle
+        let compAngle = angle < 0 ? (angle + CGFloat(2 * Double.pi)) : angle
+        self.init()
         dx = cos(compAngle.checked)
         dy = sin(compAngle.checked)
         _ = self.checked
@@ -142,12 +144,12 @@ extension CGVector{
         return atan2(dy, dx)}
     
     static func theta(_ vec1:CGVector, vec2:CGVector) -> Angle{
-		var i = vec1.normalized.dot(vec2.normalized)
+        var i = vec1.normalized.dot(vec2.normalized)
         if (i > 1) {
-    		i = 1;
+            i = 1;
         }
         if (i < -1){
-         	i = -1;
+            i = -1;
         }
         return acos(i).checked
     }
